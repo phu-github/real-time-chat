@@ -1,8 +1,8 @@
+import { Button, Col, Row, Typography } from 'antd';
 import React from 'react';
-import { Row, Col, Button, Typography } from 'antd';
-import firebase, { auth, db } from '../../firebase/config';
 import { useHistory } from "react-router";
-import {addDocument} from '../../firebase/services';
+import firebase, { auth } from '../../firebase/config';
+import { addDocument } from '../../firebase/services';
 
 const {Title} = Typography;
 const fbProvider = new firebase.auth.FacebookAuthProvider();

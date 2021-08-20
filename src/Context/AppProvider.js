@@ -1,9 +1,6 @@
 import React, { useContext, useMemo, useState } from 'react';
-import {useHistory} from 'react-router-dom';
-import firebase, { auth } from '../firebase/config';
-import { Spin } from 'antd';
-import { AuthContext } from './AuthProvider';
 import useFireStore from '../hooks/useFireStore';
+import { AuthContext } from './AuthProvider';
 
 export const AppContext = React.createContext()
 

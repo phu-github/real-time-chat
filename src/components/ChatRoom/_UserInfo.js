@@ -1,8 +1,8 @@
-import React, { useContext, useEffect } from 'react';
-import {Row, Col, Button ,Avatar, Typography} from 'antd'
+import { Avatar, Button, Typography } from 'antd';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
-import {auth, db} from '../../firebase/config';
 import { AuthContext } from '../../Context/AuthProvider';
+import { auth } from '../../firebase/config';
 
 const WapperUserInfo = styled.div`
     display: flex;

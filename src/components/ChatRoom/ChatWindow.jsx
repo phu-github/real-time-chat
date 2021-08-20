@@ -68,14 +68,14 @@ export default function ChatWindow() {
     ,[rooms, selectedRoomId]);
 
     // console.log( rooms, selectedRoomId, selectedRoom);
-    console.log(selectedRoom);
+    console.log('========= âjaj',selectedRoom);
 
     return (
             <WrapperStyle>
                 <HeaderStyle>
                     <div className='header_info'>
-                        <p className="header_title">{selectedRoom.name}</p>
-                        <span className='header_desciption'>{selectedRoom.description}</span>
+                        {/* <p className="header_title">{selectedRoom.name}</p>
+                        <span className='header_desciption'>{selectedRoom.description}</span> */}
                     </div>
                     <div className='button_group'>
                         <Button className="button_invite" type='text' icon={<UserAddOutlined/>} >Mời</Button>

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import {useHistory} from 'react-router-dom';
-import firebase, { auth } from '../firebase/config';
 import { Spin } from 'antd';
+import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { auth } from '../firebase/config';
 
 export const AuthContext = React.createContext()
 function AuthProvider({ children }) {
