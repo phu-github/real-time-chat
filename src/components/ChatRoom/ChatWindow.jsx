@@ -68,8 +68,8 @@ export default function ChatWindow() {
     ,[rooms, selectedRoomId]);
 
     // console.log( rooms, selectedRoomId, selectedRoom);
-    console.log('========= âjaj',selectedRoom);
-
+    // console.log('========= rooms',rooms);
+    // console.log('========= rooms',selectedRoom);
     return (
             <WrapperStyle>
                 <HeaderStyle>

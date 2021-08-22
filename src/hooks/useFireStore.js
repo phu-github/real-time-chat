@@ -31,7 +31,7 @@ import {auth, db} from '../firebase/config';
                 id: doc.id,
             }))
             setDocument(documents);
-            console.log('========= documents ',documents);
+            // console.log('========= documents ',documents);
         });
 
         return unsubscribed; 

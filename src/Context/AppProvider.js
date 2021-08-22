@@ -8,7 +8,7 @@ export default function AppProvider({ children }) {
     const [isAddRoomVisible, setIsAddRoomVisible ] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState('');
 
-    console.log("=====isAddRoomVisible = ", isAddRoomVisible);
+    // console.log("=====isAddRoomVisible = ", isAddRoomVisible);
     const {user: {uid}} = useContext(AuthContext); 
     /* 
     name: room-name,
@@ -22,10 +22,15 @@ export default function AppProvider({ children }) {
             compareValue: uid
         }
     },[uid]);
+    // const usersCondition = useMemo(()=>{
+    //     return {
+    //         fieldName: 'users',
+    //         operator: 'in',
+    //         compareValue: uid
+    //     }
+    // },[uid]);
     const rooms = useFireStore('rooms', roomsCondition);
-
-    console.log('=========== rooms', rooms);
-    
+    // const members =  useFireStore('users', usersCondition);
     return (
         <AppContext.Provider value={{ rooms, isAddRoomVisible, setIsAddRoomVisible, selectedRoomId, setSelectedRoomId }}>
             {children}
