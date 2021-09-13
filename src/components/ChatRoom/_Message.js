@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar, Typography } from 'antd';
 import styled from 'styled-components';
-
+import { formatRelative } from 'date-fns/esm';
 
 const MessageMeStyle = styled.div`
     margin-bottom: 5px;
@@ -28,13 +28,31 @@ const MessageMeStyle = styled.div`
 
 `;
 
-export default function Message({text, displayName, createdAt, photoURL}) {
+function formatDate(seconds) {
+    let formattedDate = '';
+  
+    if (seconds) {
+      formattedDate = formatRelative(new Date(seconds * 1000), new Date());
+  
+      formattedDate =
+        formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
+    }
+  
+    return formattedDate;
+}
+
+export default function Message({text, displayName, created_at, photoURL}) {
+        console.log("^^^^^^^^^ created_at", created_at);
     return (
         <MessageMeStyle>
             <div>
-                <Avatar size='small' src={photoURL}>A</Avatar>
+                <Avatar size='small' src={photoURL}>
+                    {photoURL ? '' : displayName?.charAt(0)?.toUpperCase()}
+                </Avatar>
                 <Typography.Text className='author'>{displayName}</Typography.Text>
-                <Typography.Text className='date'>{createdAt}</Typography.Text>
+                <Typography.Text className='date'>
+                    {formatDate(created_at?.seconds)}
+                </Typography.Text>
             </div>
             <div>
                 <Typography.Text className='content'>{text}</Typography.Text>

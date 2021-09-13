@@ -1,9 +1,12 @@
 import { UserAddOutlined } from '@ant-design/icons';
-import { Avatar, Button, Form, Input, Tooltip } from 'antd';
-import React, { useContext, useMemo } from 'react';
+import { Avatar, Button, Form, Input, Tooltip, Alert } from 'antd';
+import React, { useContext, useState, useMemo} from 'react';
 import styled from 'styled-components';
 import { AppContext } from '../../Context/AppProvider';
+import { AuthContext } from '../../Context/AuthProvider';
 import Message from './_Message';
+import { addDocument } from '../../firebase/services';
+import useFireStore from '../../hooks/useFireStore';
 
 const WrapperStyle = styled.div`
     height: 100vh;
@@ -61,78 +64,92 @@ const FormStyle = styled.div`
     }
 `;
 export default function ChatWindow() {
-    const {rooms, selectedRoomId} = useContext(AppContext);
+    const {selectedRoom, members, setIsInviteMemberVisible} = useContext(AppContext);
     
-    const selectedRoom = useMemo(
-        () => rooms.find((room)=> room.id === selectedRoomId)
-    ,[rooms, selectedRoomId]);
+    // Du lieu cho message
+    const {
+        user:{uid, photoURL, displayName},
+    } = useContext(AuthContext);
+    //du lieu de clear form: input
+    const [form] = Form.useForm();
 
-    // console.log( rooms, selectedRoomId, selectedRoom);
-    console.log(selectedRoomId);
-    // console.log('========= rooms',rooms);
-    // console.log('========= rooms',selectedRoom);
+    const [inputValue, setInputValue]= useState('');
+    const handleInputChange = (e) =>{
+        setInputValue(e.target.value);
+    };
+    const handleOnSubmit = () =>{
+        addDocument('messages', {
+            text: inputValue,
+            uid,
+            photoURL,
+            roomId: selectedRoom.id,
+            displayName,
+        });
+        form.resetFields(['message']);
+        console.log("cos rest");
+    };
+
+    const condition = useMemo(()=>({
+        fieldName: 'roomId',
+        operator: '==',
+        compareValue: selectedRoom.id
+    }),[selectedRoom.id]);
+
+    const messages = useFireStore('messages', condition);
+    console.log('$$$$$$$$$$$$mes:', messages)
     return (
             <WrapperStyle>
-                <HeaderStyle>
-                    <div className='header_info'>
-                        <p className="header_title">{selectedRoom.name}</p>
-                        <span className='header_desciption'>{selectedRoom.description}</span>
-                    </div>
-                    <div className='button_group'>
-                        <Button className="button_invite" type='text' icon={<UserAddOutlined/>} >Mời</Button>
-                        <Avatar.Group size='large' maxCount={2}>
-                            <Tooltip placement="bottom" title="prompt text A">
-                                <Avatar>A</Avatar>
-                            </Tooltip>
-                            <Tooltip placement="bottom" title="prompt text B">
-                                <Avatar>B</Avatar>
-                            </Tooltip>
-                            <Tooltip placement="bottom" title="prompt text C">
-                                <Avatar>C</Avatar>
-                            </Tooltip>
-                            <Tooltip placement="bottom" title="prompt text D">
-                                <Avatar>D</Avatar>
-                            </Tooltip>
-                        </Avatar.Group>
-                    </div>
-                </HeaderStyle>
-                <ContentStyle>
-                    <MessageListStyle>
-                        <Message text="text 1ádasdasdddddddddddddddd" displayName="Tùng" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 2" displayName="Quân" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 3" displayName="Sơn" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 4" displayName="AN" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 5" displayName="Trường" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 1" displayName="Tùng" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="textsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss 2" displayName="Quân" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 3" displayName="Sơn" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 4" displayName="AN" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 5" displayName="Trường" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 1" displayName="Tùng" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 2" displayName="Quân" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 3" displayName="Sơn" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 4" displayName="AN" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 5" displayName="Trường" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 1" displayName="Tùng" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 2" displayName="Quân" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 3" displayName="Sơn" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 4" displayName="AN" createdAt={123456} photoURL={null}  ></Message>
-                        <Message text="text 5" displayName="Trường" createdAt={123456} photoURL={null}  ></Message>
-                    </MessageListStyle>
-                    <Form>
-                        <FormStyle>
-                            <Form.Item 
-                                className="form_item"
-                                name="username"
-                            >
-                                <Input placeholder="Nhắn vào đây" bordered={false}/>
-                            </Form.Item>
-                            <Button type="primary" htmlType="submit">
-                            Gửi
-                            </Button>
-                        </FormStyle>
-                    </Form>
-                </ContentStyle>
+                {selectedRoom.id ? (
+                <>
+                    <HeaderStyle>
+                        <div className='header_info'>
+                                    <p className="header_title">{selectedRoom.name}</p>
+                                    <span className='header_desciption'>{selectedRoom.description}</span>
+                        </div>
+                        <div className='button_group'>
+                            <Button className="button_invite" type='text' icon={<UserAddOutlined/>} onClick={()=>setIsInviteMemberVisible(true)} >Mời</Button>
+                            <Avatar.Group size='large' maxCount={2}>
+                                {
+                                    members.map(member => <Tooltip title={member.displayName} key={member.id}>
+                                        <Avatar src={member.photoURL}>{member.photoURL ? '' : member.displayName?.charAt(0)?.toUpperCase() }</Avatar>
+                                    </Tooltip>)
+                                }
+                            </Avatar.Group>
+                        </div>
+                    </HeaderStyle>
+                    <ContentStyle>
+                        <MessageListStyle>
+                            {
+                                messages.map((mes)=>
+                                    <Message
+                                        key={mes.id} 
+                                        text={mes.text}
+                                        displayName={mes.displayName} 
+                                        created_at={mes.created_at}
+                                        photoURL={mes.photoURL}
+                                    /> 
+                                )
+                            }
+                        </MessageListStyle>
+                        <Form form={form}>
+                            <FormStyle >
+                                <Form.Item name="message" className="form_item">
+                                    <Input 
+                                        placeholder="Nhap tin nhan"
+                                        onChange={handleInputChange}
+                                        onPressEnter={handleOnSubmit}
+                                        bordered={false}
+                                        autoComplete='off'
+                                        />
+                                </Form.Item>
+                                <Button type="primary" htmlType="submit" onClick={handleOnSubmit}>
+                                Gửi
+                                </Button>
+                            </FormStyle>                      
+                        </Form>
+                    </ContentStyle>
+                </>) : <Alert message="Vui lòng chọn phòng" type="info" showIcon style={{ margin: 5 }} closable> </Alert>}
+                    
             </WrapperStyle>
     );
 }

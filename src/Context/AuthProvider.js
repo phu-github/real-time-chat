@@ -9,10 +9,9 @@ function AuthProvider({ children }) {
     const [user, setUser] = useState({});
     const [isLoading, setIsLoading] = useState(true);
 
-    // Khi đăng nhập nó sẽ get dữ liệu về và truyền vào Context API : user
+    // User
     React.useEffect(()=>{
         const unsubscribed = auth.onAuthStateChanged((user)=>{
-            console.log({user});
             if(user){
                 const {displayName, email, uid, photoURL} = user;
                 setUser({
@@ -33,7 +32,7 @@ function AuthProvider({ children }) {
             unsubscribed(); 
         }
     },[history]);
- 
+    //////////////////////////////////////////////
     return (
         <AuthContext.Provider value={{ user }}>
             {isLoading ? <Spin /> : children}

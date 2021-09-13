@@ -34,8 +34,8 @@ export default function UserInfo() {
         photoURL,
         uid
     }} = useContext(AuthContext);
-
-
+    const data = useContext(AuthContext);
+    console.log('====== data', data);
     return (
         <WapperUserInfo>
                 <div>

@@ -2,7 +2,7 @@ import { Button, Col, Row, Typography } from 'antd';
 import React from 'react';
 import { useHistory } from "react-router";
 import firebase, { auth } from '../../firebase/config';
-import { addDocument } from '../../firebase/services';
+import { addDocument, generateKeywords } from '../../firebase/services';
 
 const {Title} = Typography;
 const fbProvider = new firebase.auth.FacebookAuthProvider();
@@ -18,22 +18,15 @@ export default function Login() {
         console.log("additionalUserInfo", additionalUserInfo);
         console.log("user", user);
         if(additionalUserInfo?.isNewUser){
-            // db.collection('users').add({
-            //     displayName: user.displayName,
-            //     email: user.email,
-            //     photoURL: user.photoURL,
-            //     uid: user.displayName,
-            //     providerId: additionalUserInfo.providerId
-            // })
-            // console.log('chạy ổn mà');
             addDocument(
                 'users', 
                 {
                     displayName: user.displayName,
                     email: user.email,
                     photoURL: user.photoURL,
-                    uid: user.displayName,
-                    providerId: additionalUserInfo.providerId
+                    uid: user.uid,
+                    providerId: additionalUserInfo.providerId,
+                    keywords: generateKeywords(user.displayName),
                 }
             )
         }

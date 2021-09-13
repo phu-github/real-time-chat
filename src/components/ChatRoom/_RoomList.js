@@ -30,9 +30,8 @@ const TypographyStyle = styled(Typography.Link)`
 
 export default function RoomList(props) {
     const {rooms, setIsAddRoomVisible, setSelectedRoomId} = useContext(AppContext);
-
+    
     const handleAddRoom = () =>{
-        console.log("them phong");
         setIsAddRoomVisible(true); 
     }
     return (

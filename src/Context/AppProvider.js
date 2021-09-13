@@ -6,9 +6,10 @@ export const AppContext = React.createContext()
 
 export default function AppProvider({ children }) {
     const [isAddRoomVisible, setIsAddRoomVisible ] = useState(false);
+    const [isInviteMemberVisible, setIsInviteMemberVisible] = useState(false);
     const [selectedRoomId, setSelectedRoomId] = useState('');
-
-    // console.log("=====isAddRoomVisible = ", isAddRoomVisible);
+   
+    
     const {user: {uid}} = useContext(AuthContext); 
     /* 
     name: room-name,
@@ -22,17 +23,37 @@ export default function AppProvider({ children }) {
             compareValue: uid
         }
     },[uid]);
-    // const usersCondition = useMemo(()=>{
-    //     return {
-    //         fieldName: 'users',
-    //         operator: 'in',
-    //         compareValue: uid
-    //     }
-    // },[uid]);
     const rooms = useFireStore('rooms', roomsCondition);
-    // const members =  useFireStore('users', usersCondition);
+
+    //selectedRooom = 1 giá trị / hoặc empty object
+    const selectedRoom = useMemo(
+        () => rooms.find((room)=> room.id === selectedRoomId) || {},
+        [rooms, selectedRoomId]
+    );
+    
+    console.log('selectedRoom =====', selectedRoom);
+    console.log('selectedRoom.members=====', selectedRoom.members);
+    const usersCondition = useMemo(()=>{
+        return {
+            fieldName: 'uid',
+            operator: 'in',
+            compareValue: selectedRoom.members,
+        };
+    },[selectedRoom.members]);
+    console.log('usersCondition======', usersCondition)
+    const members =  useFireStore('users', usersCondition);
+    console.log('members', members);
     return (
-        <AppContext.Provider value={{ rooms, isAddRoomVisible, setIsAddRoomVisible, selectedRoomId, setSelectedRoomId }}>
+        <AppContext.Provider value={{ 
+            rooms, 
+            members,
+            selectedRoom, 
+            isAddRoomVisible,
+            selectedRoomId, 
+            setIsAddRoomVisible, 
+            isInviteMemberVisible,
+            setIsInviteMemberVisible,
+            setSelectedRoomId }}>
             {children}
         </AppContext.Provider> 
     );
